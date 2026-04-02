@@ -85,7 +85,6 @@ export default function Dashboard() {
       {/* Hero */}
       <div className="fade-up" style={{ marginBottom: 36 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-          <span style={{ fontSize: '1.4rem' }}>👋</span>
           <span style={{ color: '#94a3b8', fontWeight: 500 }}>Welcome back,</span>
           <span style={{ fontWeight: 700, color: '#f1f5f9' }}>{user?.username ?? 'Athlete'}</span>
         </div>
@@ -100,10 +99,10 @@ export default function Dashboard() {
 
       {/* Stat grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16, marginBottom: 32 }}>
-        <StatCard icon="⚡" label="Total Points" value={(user?.total_points ?? 0).toLocaleString()} sub="All time" accent="#fbbf24" />
-        <StatCard icon="🔥" label="Day Streak" value={perf?.streak ?? 0} sub="consecutive days" accent="#f97316" />
-        <StatCard icon="🏆" label="Personal Records" value={prCount} sub="exercises" accent="#8b5cf6" />
-        <StatCard icon="📦" label="Workouts" value={perf?.workouts_count ?? 0} sub="logged total" accent="#06b6d4" />
+        <StatCard label="Total Points" value={(user?.total_points ?? 0).toLocaleString()} sub="All time" accent="#fbbf24" />
+        <StatCard label="Day Streak" value={perf?.streak ?? 0} sub="consecutive days" accent="#f97316" />
+        <StatCard label="Personal Records" value={prCount} sub="exercises" accent="#8b5cf6" />
+        <StatCard label="Workouts" value={perf?.workouts_count ?? 0} sub="logged total" accent="#06b6d4" />
       </div>
 
       {/* Recent workouts */}

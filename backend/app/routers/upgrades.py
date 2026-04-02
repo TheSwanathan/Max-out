@@ -13,10 +13,15 @@ def get_upgrades(current_user: models.User = Depends(get_current_user), db: Sess
     """List all upgrades, flagging which ones the user already owns."""
     user_id = current_user.id
     all_upgrades = db.query(models.Upgrade).all()
-    owned_ids = {
-        uu.upgrade_id
-        for uu in db.query(models.UserUpgrade)
+    from sqlalchemy import func
+    owned_counts = {
+        row.upgrade_id: row.count
+        for row in db.query(
+            models.UserUpgrade.upgrade_id, 
+            func.count(models.UserUpgrade.id).label("count")
+        )
         .filter(models.UserUpgrade.user_id == user_id)
+        .group_by(models.UserUpgrade.upgrade_id)
         .all()
     }
 
@@ -28,7 +33,7 @@ def get_upgrades(current_user: models.User = Depends(get_current_user), db: Sess
             effect_type=u.effect_type,
             value=u.value,
             cost=u.cost,
-            owned=u.id in owned_ids,
+            count=owned_counts.get(u.id, 0),
         )
         for u in all_upgrades
     ]
@@ -47,20 +52,6 @@ def unlock_upgrade(
     if not upgrade:
         raise HTTPException(status_code=404, detail="Upgrade not found")
 
-    # Already owned?
-    existing = (
-        db.query(models.UserUpgrade)
-        .filter(
-            models.UserUpgrade.user_id == req.user_id,
-            models.UserUpgrade.upgrade_id == req.upgrade_id,
-        )
-        .first()
-    )
-    if existing:
-        return schemas.UnlockResult(
-            success=False, message="Already owned.", remaining_points=user.total_points
-        )
-
     # Enough points?
     if user.total_points < upgrade.cost:
         return schemas.UnlockResult(
@@ -71,7 +62,7 @@ def unlock_upgrade(
 
     # Deduct and grant
     user.total_points -= upgrade.cost
-    db.add(models.UserUpgrade(user_id=req.user_id, upgrade_id=req.upgrade_id))
+    db.add(models.UserUpgrade(user_id=user.id, upgrade_id=req.upgrade_id))
     db.commit()
 
     return schemas.UnlockResult(

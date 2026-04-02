@@ -68,14 +68,13 @@ class UpgradeOut(BaseModel):
     effect_type: str
     value: float
     cost: int
-    owned: bool = False
+    count: int = 0
 
     class Config:
         from_attributes = True
 
 
 class UnlockRequest(BaseModel):
-    user_id: int
     upgrade_id: int
 
 

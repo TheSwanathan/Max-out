@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react'
 import { getUpgrades, getUser, unlockUpgrade } from '../api'
 
 const EFFECT_ICONS = {
-  pr_multiplier:       '🏆',
-  streak_shield:       '🛡️',
-  volume_bonus:        '📦',
-  weekend_multiplier:  '🗓️',
+  pr_multiplier: '🏆',
+  streak_shield: '🛡️',
+  volume_bonus: '📦',
+  weekend_multiplier: '🗓️',
 }
 
 const EFFECT_LABELS = {
-  pr_multiplier:       'PR Multiplier',
-  streak_shield:       'Streak Shield',
-  volume_bonus:        'Volume Bonus',
-  weekend_multiplier:  'Weekend Bonus',
+  pr_multiplier: 'PR Multiplier',
+  streak_shield: 'Streak Shield',
+  volume_bonus: 'Volume Bonus',
+  weekend_multiplier: 'Weekend Bonus',
 }
 
 function UpgradeCard({ upgrade, userPoints, onUnlock }) {
@@ -23,31 +23,31 @@ function UpgradeCard({ upgrade, userPoints, onUnlock }) {
   return (
     <div className={`card fade-up ${upgrade.owned ? 'glow-green' : ''}`} style={{
       padding: '24px', display: 'flex', flexDirection: 'column', gap: 14,
-      border: upgrade.owned
+      border: upgrade.count > 0
         ? '1px solid rgba(16,185,129,0.4)'
         : canAfford
           ? '1px solid rgba(139,92,246,0.25)'
           : '1px solid rgba(139,92,246,0.1)',
-      opacity: upgrade.owned ? 0.95 : 1,
+      opacity: 1,
       position: 'relative', overflow: 'hidden',
     }}>
-      {upgrade.owned && (
+      {upgrade.count > 0 && (
         <div style={{
           position: 'absolute', top: 12, right: 12,
           background: 'rgba(16,185,129,0.15)', color: '#10b981',
           fontSize: '0.7rem', fontWeight: 700, padding: '3px 10px', borderRadius: 999,
           border: '1px solid rgba(16,185,129,0.3)',
-        }}>✓ OWNED</div>
+        }}>x{upgrade.count} OWNED</div>
       )}
 
       {/* Icon + name */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{
           width: 48, height: 48, borderRadius: 12, fontSize: '1.5rem',
-          background: upgrade.owned
+          background: upgrade.count > 0
             ? 'rgba(16,185,129,0.1)'
             : 'rgba(139,92,246,0.1)',
-          border: upgrade.owned
+          border: upgrade.count > 0
             ? '1px solid rgba(16,185,129,0.25)'
             : '1px solid rgba(139,92,246,0.2)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -77,20 +77,14 @@ function UpgradeCard({ upgrade, userPoints, onUnlock }) {
           <span style={{ color: '#475569', fontSize: '0.8rem' }}>pts</span>
         </div>
 
-        {upgrade.owned ? (
-          <button className="btn-ghost" style={{ cursor: 'default', color: '#10b981', borderColor: 'rgba(16,185,129,0.3)' }} disabled>
-            Active
-          </button>
-        ) : (
-          <button
-            id={`unlock-btn-${upgrade.id}`}
-            className={canAfford ? 'btn-gold' : 'btn-ghost'}
-            onClick={() => onUnlock(upgrade)}
-            disabled={!canAfford}
-          >
-            {canAfford ? '🔓 Unlock' : `Need ${upgrade.cost - userPoints} more pts`}
-          </button>
-        )}
+        <button
+          id={`unlock-btn-${upgrade.id}`}
+          className={canAfford ? 'btn-gold' : 'btn-ghost'}
+          onClick={() => onUnlock(upgrade)}
+          disabled={!canAfford}
+        >
+          {canAfford ? 'UNLOCK AGAIN' : `Need ${upgrade.cost - userPoints} more pts`}
+        </button>
       </div>
     </div>
   )
@@ -132,8 +126,8 @@ export default function Upgrades() {
     }
   }
 
-  const owned = upgrades.filter(u => u.owned)
-  const available = upgrades.filter(u => !u.owned)
+  const ownedUpgrades = upgrades.filter(u => u.count > 0);
+  const totalOwnedCount = upgrades.reduce((sum, u) => sum + u.count, 0);
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: 12 }}>
@@ -161,39 +155,39 @@ export default function Upgrades() {
             {(user?.total_points ?? 0).toLocaleString()}
           </div>
         </div>
-        {owned.length > 0 && (
+        {totalOwnedCount > 0 && (
           <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>OWNED</div>
-            <div style={{ fontWeight: 700, fontSize: '1.2rem', color: '#10b981' }}>{owned.length}/{upgrades.length}</div>
+            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>TOTAL OWNED</div>
+            <div style={{ fontWeight: 700, fontSize: '1.2rem', color: '#10b981' }}>{totalOwnedCount}</div>
           </div>
         )}
       </div>
 
-      {/* Available upgrades */}
-      {available.length > 0 && (
-        <>
-          <h2 style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '1rem',
-            color: '#94a3b8', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Available
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 16, marginBottom: 32 }}>
-            {available.map(u => (
-              <UpgradeCard key={u.id} upgrade={u} userPoints={user?.total_points ?? 0} onUnlock={handleUnlock} />
-            ))}
-          </div>
-        </>
-      )}
+      {/* Shop Section */}
+      <h2 style={{
+        fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '1rem',
+        color: '#94a3b8', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.08em'
+      }}>
+        Upgrade Shop
+      </h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 16, marginBottom: 40 }}>
+        {upgrades.map(u => (
+          <UpgradeCard key={u.id} upgrade={u} userPoints={user?.total_points ?? 0} onUnlock={handleUnlock} />
+        ))}
+      </div>
 
-      {/* Owned upgrades */}
-      {owned.length > 0 && (
+      {/* Collection Section */}
+      {ownedUpgrades.length > 0 && (
         <>
-          <h2 style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '1rem',
-            color: '#94a3b8', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Active Upgrades
+          <h2 style={{
+            fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '1rem',
+            color: '#94a3b8', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.08em'
+          }}>
+            Your Collection
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 16 }}>
-            {owned.map(u => (
-              <UpgradeCard key={u.id} upgrade={u} userPoints={user?.total_points ?? 0} onUnlock={handleUnlock} />
+            {ownedUpgrades.map(u => (
+              <UpgradeCard key={`owned-${u.id}`} upgrade={u} userPoints={user?.total_points ?? 0} onUnlock={handleUnlock} />
             ))}
           </div>
         </>

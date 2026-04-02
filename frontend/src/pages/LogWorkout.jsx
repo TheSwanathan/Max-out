@@ -73,8 +73,10 @@ function ResultCard({ result, onClose }) {
         {/* Breakdown */}
         <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: '14px 18px', marginBottom: 20, textAlign: 'left' }}>
           {Object.entries(result.breakdown).map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0',
-              fontSize: '0.85rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+            <div key={k} style={{
+              display: 'flex', justifyContent: 'space-between', padding: '4px 0',
+              fontSize: '0.85rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.04)'
+            }}>
               <span style={{ textTransform: 'capitalize' }}>{k.replaceAll('_', ' ')}</span>
               <span style={{ color: '#fbbf24', fontWeight: 600 }}>+{v}</span>
             </div>
@@ -138,11 +140,15 @@ export default function LogWorkout() {
       <p className="page-subtitle fade-up">Record your exercises to earn points and track progress.</p>
 
       {/* Column headers */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 100px 80px 80px 40px', gap: 10,
-        padding: '0 18px', marginBottom: 8 }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 100px 80px 80px 40px', gap: 10,
+        padding: '0 18px', marginBottom: 8
+      }}>
         {['Exercise', 'Weight (lbs)', 'Reps', 'Sets', ''].map((h, i) => (
-          <div key={i} style={{ fontSize: '0.72rem', fontWeight: 600, color: '#475569',
-            textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'center' : 'left' }}>
+          <div key={i} style={{
+            fontSize: '0.72rem', fontWeight: 600, color: '#475569',
+            textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i > 0 ? 'center' : 'left'
+          }}>
             {h}
           </div>
         ))}
@@ -166,15 +172,17 @@ export default function LogWorkout() {
         style={{ resize: 'vertical', minHeight: 80, marginBottom: 20, fontFamily: 'inherit' }} />
 
       {error && (
-        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-          borderRadius: 10, padding: '12px 16px', color: '#ef4444', fontSize: '0.875rem', marginBottom: 16 }}>
+        <div style={{
+          background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+          borderRadius: 10, padding: '12px 16px', color: '#ef4444', fontSize: '0.875rem', marginBottom: 16
+        }}>
           ⚠️ {error}
         </div>
       )}
 
       <button id="submit-workout-btn" className="btn-primary" style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
         onClick={handleSubmit} disabled={loading}>
-        {loading ? 'Calculating points…' : '⚡ Log Workout & Earn Points'}
+        {loading ? 'Calculating points…' : 'Log Workout & Earn Points'}
       </button>
 
       {result && (
