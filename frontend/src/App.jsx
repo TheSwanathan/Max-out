@@ -28,24 +28,26 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {isAuth && <Navbar onLogout={logout} />}
-      <Routes>
-        {!isAuth ? (
-          <>
-            <Route path="/login" element={<Login setAuth={setIsAuth} />} />
-            <Route path="/signup" element={<Signup setAuth={setIsAuth} />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </>
-        ) : (
-          <>
-            <Route path="/"         element={<Dashboard />} />
-            <Route path="/log"      element={<LogWorkout />} />
-            <Route path="/progress" element={<Progress />} />
-            <Route path="/upgrades" element={<Upgrades />} />
-            <Route path="*"         element={<Navigate to="/" replace />} />
-          </>
-        )}
-      </Routes>
+      {!isAuth ? (
+        <Routes>
+          <Route path="/login" element={<Login setAuth={setIsAuth} />} />
+          <Route path="/signup" element={<Signup setAuth={setIsAuth} />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      ) : (
+        <div className="app-container">
+          <Navbar onLogout={logout} />
+          <main className="main-content">
+            <Routes>
+              <Route path="/"         element={<Dashboard />} />
+              <Route path="/log"      element={<LogWorkout />} />
+              <Route path="/progress" element={<Progress />} />
+              <Route path="/upgrades" element={<Upgrades />} />
+              <Route path="*"         element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+        </div>
+      )}
     </BrowserRouter>
   )
 }

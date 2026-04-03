@@ -45,7 +45,7 @@ function ExerciseRow({ ex, idx, onChange, onRemove }) {
           style={{ fontSize: '0.88rem', textAlign: 'center' }} />
       </div>
       <button id={`ex-remove-${idx}`} onClick={() => onRemove(idx)}
-        style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.1rem', padding: 4 }}>
+        style={{ background: 'none', border: 'none', color: '#ffffffff', cursor: 'pointer', fontSize: '1.1rem', padding: 4 }}>
         ✕
       </button>
     </div>

@@ -1,66 +1,78 @@
 import { NavLink } from 'react-router-dom'
+import logo from '../assets/logo.png'
 
 const links = [
-  { to: '/',          label: 'Dashboard', icon: '⚡' },
-  { to: '/log',       label: 'Log',        icon: '➕' },
-  { to: '/progress',  label: 'Progress',   icon: '📈' },
-  { to: '/upgrades',  label: 'Upgrades',   icon: '🔧' },
+  { to: '/', label: 'Dashboard' },
+  { to: '/log', label: 'Log' },
+  { to: '/progress', label: 'Progress' },
+  { to: '/upgrades', label: 'Upgrades' },
 ]
 
 export default function Navbar({ onLogout }) {
   return (
-    <nav style={{
-      background: 'rgba(8,8,15,0.85)',
-      backdropFilter: 'blur(16px)',
-      borderBottom: '1px solid rgba(139,92,246,0.12)',
-      position: 'sticky', top: 0, zIndex: 100,
+    <aside style={{
+      width: 280,
+      height: '100vh',
+      background: 'rgba(8,8,15,1)',
+      borderRight: '1px solid rgba(139,92,246,0.12)',
+      position: 'sticky', top: 0,
+      display: 'flex', flexDirection: 'column',
+      padding: '32px 20px',
+      flexShrink: 0,
     }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
-
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 32, height: 32,
-            background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
-            borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 16,
-          }}>🏋️</div>
-          <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '1.1rem',
-            background: 'linear-gradient(135deg,#8b5cf6,#06b6d4)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Max-out
-          </span>
-        </div>
-
-        {/* Links */}
-        <div style={{ display: 'flex', gap: 4 }}>
-          {links.map(({ to, label, icon }) => (
-            <NavLink key={to} to={to} end={to === '/'}
-              style={({ isActive }) => ({
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '6px 14px', borderRadius: 8,
-                fontSize: '0.875rem', fontWeight: 500,
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                background: isActive ? 'rgba(139,92,246,0.15)' : 'transparent',
-                color: isActive ? '#8b5cf6' : '#94a3b8',
-                border: isActive ? '1px solid rgba(139,92,246,0.3)' : '1px solid transparent',
-              })}>
-              <span>{icon}</span>
-              <span>{label}</span>
-            </NavLink>
-          ))}
-          {onLogout && (
-            <button onClick={onLogout} style={{ 
-              background: 'transparent', border: 'none', cursor: 'pointer', color: '#ef4444',
-              padding: '6px 14px', fontSize: '0.875rem', fontWeight: 500 
-            }}>
-              🚪 Logout
-            </button>
-          )}
+      {/* Sidebar Header: Logo */}
+      <div style={{ marginBottom: 48, textAlign: 'center' }}>
+        <div>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: '100%', height: 'auto', maxWidth: 250 }}
+          />
         </div>
       </div>
-    </nav>
+
+      {/* Navigation Links */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
+        {links.map(({ to, label }) => {
+          const icon = to === '/' ? '' : to === '/log' ? '' : to === '/progress' ? '' : ''
+          return (
+            <NavLink key={to} to={to} end={to === '/'}
+              style={({ isActive }) => ({
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '12px 16px', borderRadius: 12,
+                fontSize: '0.925rem', fontWeight: 600,
+                textDecoration: 'none',
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                background: isActive ? 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.1))' : 'transparent',
+                color: isActive ? '#fff' : '#94a3b8',
+                border: isActive ? '1px solid rgba(139,92,246,0.3)' : '1px solid transparent',
+                boxShadow: isActive ? '0 4px 12px rgba(0,0,0,0.2)' : 'none',
+              })}>
+              <span style={{ fontSize: '1.2rem', opacity: 0.9 }}>{icon}</span>
+              <span>{label}</span>
+            </NavLink>
+          )
+        })}
+      </div>
+
+      {/* Sidebar Footer: Logout */}
+      {onLogout && (
+        <div style={{ marginTop: 'auto', paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <button onClick={onLogout} style={{
+            width: '100%',
+            display: 'flex', alignItems: 'center', gap: 12,
+            background: 'transparent', border: 'none', cursor: 'pointer',
+            padding: '12px 16px', borderRadius: 12,
+            color: '#ef4444', fontSize: '0.925rem', fontWeight: 600,
+            transition: 'background 0.2s',
+          }}
+            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
+            onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+          >
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
+    </aside>
   )
 }

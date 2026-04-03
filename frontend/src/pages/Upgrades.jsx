@@ -83,7 +83,7 @@ function UpgradeCard({ upgrade, userPoints, onUnlock }) {
           onClick={() => onUnlock(upgrade)}
           disabled={!canAfford}
         >
-          {canAfford ? 'UNLOCK AGAIN' : `Need ${upgrade.cost - userPoints} more pts`}
+          {canAfford ? 'UNLOCK' : `Need ${upgrade.cost - userPoints} more pts`}
         </button>
       </div>
     </div>
@@ -183,11 +183,11 @@ export default function Upgrades() {
             fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '1rem',
             color: '#94a3b8', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.08em'
           }}>
-            Your Collection
+            Active Upgrades
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 16 }}>
             {ownedUpgrades.map(u => (
-              <UpgradeCard key={`owned-${u.id}`} upgrade={u} userPoints={user?.total_points ?? 0} onUnlock={handleUnlock} />
+              <UpgradeCard key={u.id} upgrade={u} userPoints={user?.total_points ?? 0} onUnlock={handleUnlock} />
             ))}
           </div>
         </>
