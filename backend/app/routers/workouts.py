@@ -42,6 +42,9 @@ def log_workout(
     user.level = get_level(user.total_points)
     level_up = user.level > old_level
 
+    # 5. Save points to workout record
+    db_workout.points_earned = result["points"]
+
     db.commit()
     db.refresh(db_workout)
 
@@ -71,3 +74,30 @@ def get_workouts(
         .limit(limit)
         .all()
     )
+
+
+@router.delete("/{workout_id}")
+def delete_workout(
+    workout_id: int,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Delete a workout and reverse the points earned from it."""
+    workout = db.query(models.Workout).filter(models.Workout.id == workout_id).first()
+    
+    if not workout:
+        raise HTTPException(status_code=404, detail="Workout not found")
+    
+    if workout.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this workout")
+
+    # Reverse points
+    points_to_remove = workout.points_earned or 0
+    user = current_user
+    user.total_points = max(0, user.total_points - points_to_remove)
+    user.level = get_level(user.total_points)
+
+    db.delete(workout)
+    db.commit()
+
+    return {"success": True, "message": f"Workout deleted. {points_to_remove} points removed.", "new_total_points": user.total_points, "new_level": user.level}

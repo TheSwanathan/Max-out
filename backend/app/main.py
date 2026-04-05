@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, SessionLocal, Base
+from .database import engine, SessionLocal, Base, run_migrations
 from . import models
 from .routers import workouts, performance, upgrades, users, auth
 
 # ── Create all tables ──────────────────────────────────────────────────────────
 Base.metadata.create_all(bind=engine)
+run_migrations()
 
 app = FastAPI(
     title="Max-out API",

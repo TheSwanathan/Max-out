@@ -33,6 +33,7 @@ class WorkoutOut(BaseModel):
     date: datetime
     notes: Optional[str]
     exercises: List[ExerciseOut]
+    points_earned: int = 0
 
     class Config:
         from_attributes = True

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getUser, getWorkouts, getPerformance } from '../api'
+import { getUser, getWorkouts, getPerformance, deleteWorkout } from '../api'
 import PointsBar from '../components/PointsBar'
 
 function StatCard({ icon, label, value, sub, accent }) {
@@ -18,7 +18,7 @@ function StatCard({ icon, label, value, sub, accent }) {
   )
 }
 
-function WorkoutRow({ workout }) {
+function WorkoutRow({ workout, onDelete }) {
   const date = new Date(workout.date)
   const exNames = [...new Set(workout.exercises.map(e => e.name))].slice(0, 3)
   const totalVol = workout.exercises.reduce((s, e) => s + e.weight * e.reps * e.sets, 0)
@@ -42,13 +42,27 @@ function WorkoutRow({ workout }) {
           </div>
         </div>
       </div>
-      <div style={{ textAlign: 'right' }}>
-        <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-          {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+            {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 2 }}>
+            {date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+          </div>
         </div>
-        <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 2 }}>
-          {date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
-        </div>
+        <button 
+          onClick={() => onDelete(workout.id)}
+          style={{
+            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
+            borderRadius: 6, width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#ef4444', fontSize: '0.7rem', cursor: 'pointer', transition: 'all 0.2s'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
+        >
+          ✕
+        </button>
       </div>
     </div>
   )
@@ -60,7 +74,8 @@ export default function Dashboard() {
   const [perf, setPerf] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
+  const fetchAll = () => {
+    setLoading(true)
     Promise.all([getUser(), getWorkouts(), getPerformance()])
       .then(([u, w, p]) => {
         setUser(u.data)
@@ -69,7 +84,23 @@ export default function Dashboard() {
       })
       .catch(console.error)
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchAll()
   }, [])
+
+  const handleDeleteWorkout = async (id) => {
+    if (!window.confirm('Delete this workout session? Points earned will be removed.')) return
+    
+    try {
+      await deleteWorkout(id)
+      fetchAll() // Refresh all stats
+    } catch (err) {
+      console.error(err)
+      alert('Failed to delete workout.')
+    }
+  }
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: 12 }}>
@@ -121,7 +152,9 @@ export default function Dashboard() {
             <div style={{ fontSize: '0.85rem' }}>Log your first session to start earning points.</div>
           </div>
         ) : (
-          workouts.slice(0, 8).map(w => <WorkoutRow key={w.id} workout={w} />)
+          workouts.slice(0, 8).map(w => (
+            <WorkoutRow key={w.id} workout={w} onDelete={handleDeleteWorkout} />
+          ))
         )}
       </div>
     </div>

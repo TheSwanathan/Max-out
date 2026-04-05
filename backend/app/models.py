@@ -25,6 +25,7 @@ class Workout(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     date = Column(DateTime(timezone=True), server_default=func.now())
     notes = Column(String, nullable=True)
+    points_earned = Column(Integer, default=0)
 
     user = relationship("User", back_populates="workouts")
     exercises = relationship("Exercise", back_populates="workout", cascade="all, delete-orphan")

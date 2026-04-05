@@ -5,7 +5,7 @@ import {
   Tooltip, ResponsiveContainer,
 } from 'recharts'
 import StrengthVisualizerSystem from '../components/StrengthVisualizerSystem'
-import { EXERCISE_LIBRARY } from '../utils/exerciseLibrary'
+import { buildCurrentMuscleProfile } from '../utils/strengthVisualizerLogic'
 
 function PRTable({ prs }) {
   const entries = Object.entries(prs).sort((a, b) => b[1] - a[1])
@@ -51,11 +51,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 }
 
 export default function Progress() {
+  const showResetControls = import.meta.env.DEV
   const [perf, setPerf] = useState(null)
   const [chartData, setChartData] = useState([])
-  const [startLogs, setStartLogs] = useState([])
-  const [nowLogs, setNowLogs] = useState([])
-  const [userBw, setUserBw] = useState(180.0)
+  const [muscleScores, setMuscleScores] = useState({})
+  const [muscleConfidence, setMuscleConfidence] = useState({})
+  const [muscleTopExercises, setMuscleTopExercises] = useState({})
   const [isResetting, setIsResetting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -64,7 +65,6 @@ export default function Progress() {
     Promise.all([getPerformance(), getWorkouts(30), getUser()])
       .then(([p, w, u]) => {
         setPerf(p.data)
-        if (u.data?.bodyweight) setUserBw(u.data.bodyweight)
         // Build volume-over-time chart
         const data = [...w.data].reverse().map(workout => {
           const vol = workout.exercises.reduce((s, e) => s + e.weight * e.reps * e.sets, 0)
@@ -76,45 +76,13 @@ export default function Progress() {
         })
         setChartData(data)
 
-        if (w.data.length > 0) {
-          // Extract all exercises with their dates
-          let allExercises = [];
-          w.data.forEach(wk => {
-            wk.exercises.forEach(ex => {
-              allExercises.push({ exerciseName: ex.name, weight: ex.weight, reps: ex.reps, date: new Date(wk.date) });
-            });
-          });
-
-          // Sort Descending (Newest first) for Now Logs
-          allExercises.sort((a, b) => b.date - a.date);
-          
-          const seenExNow = new Set();
-          const parsedNowLogs = [];
-          allExercises.forEach(ex => {
-            if (!seenExNow.has(ex.exerciseName)) {
-              seenExNow.add(ex.exerciseName);
-              parsedNowLogs.push(ex);
-            }
-          });
-          setNowLogs(parsedNowLogs);
-
-          // Sort Ascending (Oldest first) for Start Logs
-          allExercises.sort((a, b) => a.date - b.date);
-          
-          const seenMusclesStart = new Set();
-          const parsedStartLogs = [];
-          allExercises.forEach(ex => {
-            const def = EXERCISE_LIBRARY[ex.exerciseName];
-            if (def && !seenMusclesStart.has(def.primary)) {
-              seenMusclesStart.add(def.primary);
-              parsedStartLogs.push(ex);
-            }
-          });
-          setStartLogs(parsedStartLogs);
-        } else {
-          setStartLogs([]);
-          setNowLogs([]);
-        }
+        const currentMuscleProfile = buildCurrentMuscleProfile(
+          w.data,
+          parseFloat(u.data?.bodyweight) || 180
+        )
+        setMuscleScores(currentMuscleProfile.scores)
+        setMuscleConfidence(currentMuscleProfile.confidence)
+        setMuscleTopExercises(currentMuscleProfile.topExercises)
       })
       .catch(console.error)
       .finally(() => setLoading(false))
@@ -148,7 +116,7 @@ export default function Progress() {
           <p className="page-subtitle fade-up">Track your strength gains and training volume over time.</p>
         </div>
         
-        {showConfirm ? (
+        {showResetControls && showConfirm ? (
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'rgba(239, 68, 68, 0.1)', padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.3)' }}>
             <span style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 600 }}>Delete ALL data?</span>
             <button onClick={executeReset} disabled={isResetting} className="badge badge-gold" style={{ background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer' }}>
@@ -158,7 +126,7 @@ export default function Progress() {
               Cancel
             </button>
           </div>
-        ) : (
+        ) : showResetControls ? (
           <button 
             onClick={() => setShowConfirm(true)} 
             disabled={isResetting}
@@ -168,7 +136,7 @@ export default function Progress() {
             }}>
             Reset Data (Testing)
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* Summary strip */}
@@ -190,9 +158,9 @@ export default function Progress() {
       {/* Strength Level Visualizer Component */}
       <div style={{ marginBottom: 24, position: 'relative' }}>
         <StrengthVisualizerSystem 
-          userBodyweight={parseFloat(userBw) || 180} 
-          startLogs={startLogs} 
-          nowLogs={nowLogs} 
+          scores={muscleScores}
+          confidence={muscleConfidence}
+          topExercises={muscleTopExercises}
         />
       </div>
 
