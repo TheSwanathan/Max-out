@@ -7,28 +7,41 @@ export const EXERCISE_LIBRARY = {
   "Cable Fly": { primary: "chest", secondary: ["shoulders"], type: "secondary" },
   "Push-ups": { primary: "chest", secondary: ["shoulders", "arms", "core"], type: "compound" },
   "Dips": { primary: "chest", secondary: ["shoulders", "arms"], type: "compound" },
+  "Incline Dumbbell Press": { primary: "chest", secondary: ["shoulders", "arms"], type: "compound" },
+  "Decline Bench Press": { primary: "chest", secondary: ["shoulders", "arms"], type: "compound" },
+  "Machine Chest Press": { primary: "chest", secondary: ["shoulders", "arms"], type: "secondary" },
+  "Pec Deck": { primary: "chest", secondary: ["shoulders"], type: "isolation" },
 
   // BACK
   "Pull-ups": { primary: "back", secondary: ["arms", "shoulders"], type: "compound" },
   "Chin-ups": { primary: "back", secondary: ["arms", "core"], type: "compound" },
-  "Lat Pulldown": { primary: "back", secondary: ["arms"], type: "compound" },
   "Barbell Row": { primary: "back", secondary: ["arms", "shoulders", "core"], type: "compound" },
   "Dumbbell Row": { primary: "back", secondary: ["arms", "shoulders"], type: "secondary" },
   "Seated Cable Row": { primary: "back", secondary: ["arms"], type: "secondary" },
   "T-Bar Row": { primary: "back", secondary: ["arms", "shoulders"], type: "secondary" },
   "Deadlift": { primary: "back", secondary: ["legs", "core"], type: "compound" },
+  "Wide Grip Lat Pulldown": { primary: "back", secondary: ["arms"], type: "compound" },
+  "Close Grip Lat Pulldown": { primary: "back", secondary: ["arms"], type: "compound" },
+  "Single Arm Dumbbell Row": { primary: "back", secondary: ["arms"], type: "secondary" },
+  "Chest Supported Row": { primary: "back", secondary: ["arms"], type: "secondary" },
+  "Inverted Row": { primary: "back", secondary: ["arms", "core"], type: "compound" },
 
   // LEGS
   "Squat": { primary: "legs", secondary: ["core", "back"], type: "compound" },
   "Front Squat": { primary: "legs", secondary: ["core", "back"], type: "compound" },
   "Leg Press": { primary: "legs", secondary: [], type: "secondary" },
-  "Lunges": { primary: "legs", secondary: ["core"], type: "secondary" },
   "Bulgarian Split Squat": { primary: "legs", secondary: ["core"], type: "secondary" },
   "Step-ups": { primary: "legs", secondary: [], type: "secondary" },
   "Leg Extension": { primary: "legs", secondary: [], type: "isolation" },
   "Leg Curl": { primary: "legs", secondary: [], type: "isolation" },
   "Romanian Deadlift": { primary: "legs", secondary: ["back", "core"], type: "compound" },
-  "Calf Raises": { primary: "legs", secondary: [], type: "isolation" },
+  "Hack Squat": { primary: "legs", secondary: [], type: "secondary" },
+  "Smith Machine Squat": { primary: "legs", secondary: ["core"], type: "secondary" },
+  "Glute Bridge": { primary: "legs", secondary: ["core"], type: "secondary" },
+  "Hip Thrust": { primary: "legs", secondary: ["core"], type: "compound" },
+  "Walking Lunges": { primary: "legs", secondary: ["core"], type: "secondary" },
+  "Seated Calf Raise": { primary: "legs", secondary: [], type: "isolation" },
+  "Standing Calf Raise": { primary: "legs", secondary: [], type: "isolation" },
 
   // SHOULDERS
   "Overhead Press": { primary: "shoulders", secondary: ["arms", "core"], type: "compound" },
@@ -37,6 +50,10 @@ export const EXERCISE_LIBRARY = {
   "Front Raise": { primary: "shoulders", secondary: [], type: "isolation" },
   "Rear Delt Fly": { primary: "shoulders", secondary: ["back"], type: "isolation" },
   "Upright Row": { primary: "shoulders", secondary: ["back", "arms"], type: "secondary" },
+  "Seated Dumbbell Press": { primary: "shoulders", secondary: ["arms"], type: "compound" },
+  "Cable Lateral Raise": { primary: "shoulders", secondary: [], type: "isolation" },
+  "Reverse Pec Deck": { primary: "shoulders", secondary: ["back"], type: "isolation" },
+  "Cable Front Raise": { primary: "shoulders", secondary: [], type: "isolation" },
 
   // ARMS
   "Barbell Curl": { primary: "arms", secondary: [], type: "isolation" },
@@ -46,6 +63,15 @@ export const EXERCISE_LIBRARY = {
   "Tricep Pushdown": { primary: "arms", secondary: [], type: "isolation" },
   "Skullcrusher": { primary: "arms", secondary: [], type: "isolation" },
   "Overhead Tricep Extension": { primary: "arms", secondary: [], type: "isolation" },
+  "Incline Dumbbell Curl": { primary: "arms", secondary: [], type: "isolation" },
+  "Rope Hammer Curl": { primary: "arms", secondary: [], type: "isolation" },
+  "Cable Curl": { primary: "arms", secondary: [], type: "isolation" },
+  "EZ Bar Curl": { primary: "arms", secondary: [], type: "isolation" },
+  "Concentration Curl": { primary: "arms", secondary: [], type: "isolation" },
+  "Close Grip Bench Press": { primary: "arms", secondary: ["chest"], type: "compound" },
+  "Rope Tricep Pushdown": { primary: "arms", secondary: [], type: "isolation" },
+  "Cable Overhead Tricep Extension": { primary: "arms", secondary: [], type: "isolation" },
+  "Bench Dips": { primary: "arms", secondary: ["chest"], type: "secondary" },
 
   // CORE
   "Plank": { primary: "core", secondary: ["shoulders"], type: "secondary" },
@@ -54,5 +80,10 @@ export const EXERCISE_LIBRARY = {
   "Hanging Leg Raise": { primary: "core", secondary: ["arms"], type: "secondary" },
   "Russian Twists": { primary: "core", secondary: [], type: "isolation" },
   "Cable Crunch": { primary: "core", secondary: [], type: "secondary" },
-  "Ab Wheel Rollout": { primary: "core", secondary: ["shoulders", "back"], type: "compound" }
+  "Ab Wheel Rollout": { primary: "core", secondary: ["shoulders", "back"], type: "compound" },
+  "Decline Sit-ups": { primary: "core", secondary: [], type: "isolation" },
+  "Toe Touches": { primary: "core", secondary: [], type: "isolation" },
+  "Bicycle Crunch": { primary: "core", secondary: [], type: "isolation" },
+  "Side Plank": { primary: "core", secondary: ["shoulders"], type: "secondary" },
+  "Mountain Climbers": { primary: "core", secondary: ["legs", "shoulders"], type: "compound" }
 };
