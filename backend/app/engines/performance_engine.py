@@ -26,7 +26,7 @@ def calculate_volume(exercises) -> float:
 
 
 def get_streak(db: Session, user_id: int) -> int:
-    """Count how many consecutive calendar days the user has had at least one workout."""
+    """Count consecutive workout days, keeping a streak alive through yesterday."""
     workouts = (
         db.query(models.Workout)
         .filter(models.Workout.user_id == user_id)
@@ -37,15 +37,22 @@ def get_streak(db: Session, user_id: int) -> int:
         return 0
 
     workout_dates = {w.date.date() for w in workouts}
-    today = datetime.utcnow().date()
-    streak = 0
+    today = datetime.now().date()
+    yesterday = today - timedelta(days=1)
 
-    for offset in range(365):
-        check = today - timedelta(days=offset)
-        if check in workout_dates:
-            streak += 1
-        else:
-            break
+    if today in workout_dates:
+        anchor_day = today
+    elif yesterday in workout_dates:
+        anchor_day = yesterday
+    else:
+        return 0
+
+    streak = 0
+    check = anchor_day
+
+    while check in workout_dates:
+        streak += 1
+        check -= timedelta(days=1)
 
     return streak
 
