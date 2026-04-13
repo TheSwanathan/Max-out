@@ -59,12 +59,6 @@ The frontend env points to the local backend:
 VITE_API_URL=http://127.0.0.1:8001
 ```
 
-## Why This Setup Is Portable
-
-- The backend now reads `.env` automatically, so developers do not need to export `DATABASE_URL` manually.
-- The default database is a local SQLite file, so no Docker or Postgres is required for basic development.
-- The required backend auth dependencies are pinned in `requirements.txt`, including a `bcrypt` version compatible with `passlib`.
-
 ## Optional Docker Setup
 
 `docker-compose.yml` is still available for a Postgres-based environment, but it is separate from the recommended local SQLite setup above.
